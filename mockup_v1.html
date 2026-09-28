@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Artifact Library Mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+      --surface-2: #faf9f6;
+      --card: #ffffff;
+      --text: #1b1b1f;
+      --text-2: #666875;
+      --text-3: #a0a0a8;
+      --border: rgba(22, 24, 31, 0.08);
+      --accent: #4f6bed;
+      --accent-hover: #405ad4;
+      --accent-soft: #edf1ff;
+      --danger: #e5484d;
+      --shadow-sm: 0 1px 2px rgba(21, 20, 28, 0.05), 0 8px 20px rgba(21, 20, 28, 0.04);
+      --shadow-md: 0 2px 8px rgba(17, 16, 22, 0.06), 0 16px 34px rgba(17, 16, 22, 0.10);
+      --success: #2d9d6f;
+      --tag: #f1f4ff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #121317;
+        --surface: #1b1d22;
+        --surface-2: #22252d;
+        --card: #1d2027;
+        --text: #f0f1f4;
+        --text-2: #a9adb7;
+        --text-3: #707784;
+        --border: rgba(255,255,255,0.07);
+        --accent: #7e96ff;
+        --accent-hover: #92a6ff;
+        --accent-soft: rgba(126,150,255,0.16);
+        --danger: #ff7878;
+        --shadow-sm: 0 1px 2px rgba(0,0,0,0.3), 0 10px 24px rgba(0,0,0,0.18);
+        --shadow-md: 0 2px 6px rgba(0,0,0,0.25), 0 20px 36px rgba(0,0,0,0.26);
+        --tag: rgba(126,150,255,0.16);
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #121317;
+      --surface: #1b1d22;
+      --surface-2: #22252d;
+      --card: #1d2027;
+      --text: #f0f1f4;
+      --text-2: #a9adb7;
+      --text-3: #707784;
+      --border: rgba(255,255,255,0.07);
+      --accent: #7e96ff;
+      --accent-hover: #92a6ff;
+      --accent-soft: rgba(126,150,255,0.16);
+      --danger: #ff7878;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.3), 0 10px 24px rgba(0,0,0,0.18);
+      --shadow-md: 0 2px 6px rgba(0,0,0,0.25), 0 20px 36px rgba(0,0,0,0.26);
+      --tag: rgba(126,150,255,0.16);
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+    button, input { font: inherit; }
+    a { color: inherit; text-decoration: none; }
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 24px 16px 120px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .brand {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      line-height: 1.1;
+      letter-spacing: -0.05em;
+      font-weight: 700;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .status-pill {
+      background: rgba(45, 157, 111, 0.12);
+      color: var(--success);
+      border: 1px solid rgba(45, 157, 111, 0.15);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 10px;
+    }
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-2);
+      display: inline-grid;
+      place-items: center;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+    }
+
+    .composer {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow-sm);
+      padding: 14px 14px 12px;
+      margin-bottom: 28px;
+    }
+    .composer:focus-within {
+      box-shadow: var(--shadow-md), 0 0 0 4px var(--accent-soft);
+      border-color: transparent;
+    }
+    .url-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 48px;
+    }
+    .url-row input {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 15px;
+      padding: 10px 6px 10px 8px;
+    }
+    .url-row input::placeholder {
+      color: var(--text-3);
+    }
+    .save-btn {
+      border: none;
+      background: var(--accent);
+      color: white;
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      min-width: 110px;
+      transition: background 0.15s ease;
+    }
+    .save-btn:hover { background: var(--accent-hover); }
+    .save-btn:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 12px;
+      border: 1px dashed var(--border);
+      background: rgba(255,255,255,0.18);
+      border-radius: 18px;
+      min-height: 250px;
+      padding: 30px 24px;
+      color: var(--text-2);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+    }
+    .empty-illustration {
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+    }
+    .empty-state h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: var(--text);
+    }
+    .empty-state p {
+      margin: 0;
+      max-width: 440px;
+      line-height: 1.5;
+    }
+
+    .library {
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+
+    .thumb {
+      position: relative;
+      min-height: 150px;
+      background: linear-gradient(135deg, #f5d7b2, #e4edf8 50%, #cfe5d0);
+      overflow: hidden;
+    }
+    .thumb img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .thumb-fallback {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      font-size: 2rem;
+      color: rgba(27, 27, 31, 0.4);
+      background: linear-gradient(135deg, #f5d7b2, #dfeafc, #d9ebdd);
+    }
+
+    .card-content {
+      padding: 16px 16px 14px 0;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .meta-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--tag);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .edit-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text-2);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .title {
+      margin: 0;
+      font-size: 1.1rem;
+      line-height: 1.35;
+      letter-spacing: -0.02em;
+      font-weight: 700;
+      word-break: break-word;
+    }
+    .meta {
+      margin-top: 8px;
+      color: var(--text-2);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .card-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .open-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .delete-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-3);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    @media (max-width: 620px) {
+      .topbar { align-items: flex-start; }
+      .url-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .save-btn {
+        width: 100%;
+      }
+      .card {
+        grid-template-columns: 1fr;
+      }
+      .thumb {
+        min-height: 200px;
+      }
+      .card-content {
+        padding: 0 14px 16px;
+      }
+      .meta-top {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <h1 class="brand">Artifact Library</h1>
+      <div class="header-actions">
+        <span class="status-pill">Synced</span>
+        <button class="icon-btn" aria-label="Toggle theme">☼</button>
+        <button class="icon-btn" aria-label="Sign out">↩</button>
+      </div>
+    </header>
+
+    <section class="composer" aria-label="Add artifact link">
+      <div class="url-row">
+        <input type="url" placeholder="Paste a Claude artifact link…" aria-label="Artifact URL" />
+        <button class="save-btn" type="button">Add link</button>
+      </div>
+    </section>
+
+    <main class="library" aria-live="polite">
+      <div class="empty-state" aria-label="No saved artifacts yet">
+        <div class="empty-illustration">📎</div>
+        <h2>No artifacts saved yet</h2>
+        <p>Paste a Claude artifact URL to save it here. The preview image and title will be added automatically, and you can edit the title later if you want.</p>
+      </div>
+
+      <article class="card" aria-label="Saved artifact card">
+        <div class="thumb">
+          <img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=1200&q=80" alt="Artifact preview" />
+        </div>
+        <div class="card-content">
+          <div class="meta-top">
+            <span class="tag">Preview</span>
+            <button class="edit-link" type="button">Edit title</button>
+          </div>
+
+          <h3 class="title">How Was Your Holiday?</h3>
+          <div class="meta">Saved from claude.ai/artifact/RFzFo4BPRZcUkufBM8G49R</div>
+
+          <div class="card-actions">
+            <a class="open-link" href="https://claude.ai/artifact/RFzFo4BPRZcUkufBM8G49R" target="_blank" rel="noreferrer">Open artifact →</a>
+            <button class="delete-btn" type="button">Delete</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" aria-label="Another artifact card">
+        <div class="thumb">
+          <div class="thumb-fallback">🧠</div>
+        </div>
+        <div class="card-content">
+          <div class="meta-top">
+            <span class="tag">Preview</span>
+            <button class="edit-link" type="button">Edit title</button>
+          </div>
+
+          <h3 class="title">Design Notes for a Better Daily Workflow</h3>
+          <div class="meta">Saved from claude.ai/artifact/abc123xyz</div>
+
+          <div class="card-actions">
+            <a class="open-link" href="https://claude.ai/artifact/abc123xyz" target="_blank" rel="noreferrer">Open artifact →</a>
+            <button class="delete-btn" type="button">Delete</button>
+          </div>
+        </div>
+      </article>
+    </main>
+  </div>
+</body>
+</html>

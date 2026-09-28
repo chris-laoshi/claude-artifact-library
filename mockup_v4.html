@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artifact Library Mockup v4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ---------- Design tokens (same as the notes app) ---------- */
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+      --surface-2: #faf9f6;
+      --text: #1c1c1e;
+      --text-2: #66666e;
+      --text-3: #a3a3aa;
+      --border: rgba(20, 20, 30, 0.07);
+      --accent: #4f6bed;
+      --accent-hover: #3f5ae0;
+      --accent-soft: #e9edfd;
+      --danger: #e5484d;
+      --danger-soft: #fdecec;
+      --ok-fg: #1d7f46;
+      --shadow-sm: 0 1px 2px rgba(20, 20, 30, 0.04), 0 2px 8px rgba(20, 20, 30, 0.04);
+      --shadow-md: 0 2px 4px rgba(20, 20, 30, 0.04), 0 10px 28px rgba(20, 20, 30, 0.09);
+      --toast-bg: #1c1c1e;
+      --toast-fg: #f5f5f7;
+      --ph-a: #eef1fd; --ph-b: #f6efe6;
+      --shimmer: rgba(255, 255, 255, 0.6);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #131315;
+        --surface: #1d1d20;
+        --surface-2: #232327;
+        --text: #ececef;
+        --text-2: #a0a0a8;
+        --text-3: #65656d;
+        --border: rgba(255, 255, 255, 0.07);
+        --accent: #7c93ff;
+        --accent-hover: #93a6ff;
+        --accent-soft: rgba(124, 147, 255, 0.15);
+        --danger: #ff6b6b;
+        --danger-soft: rgba(255, 107, 107, 0.14);
+        --ok-fg: #6ee7a0;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.35), 0 12px 32px rgba(0, 0, 0, 0.4);
+        --toast-bg: #2c2c31;
+        --toast-fg: #f5f5f7;
+        --ph-a: #20222c; --ph-b: #26232a;
+        --shimmer: rgba(255, 255, 255, 0.06);
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #131315;
+      --surface: #1d1d20;
+      --surface-2: #232327;
+      --text: #ececef;
+      --text-2: #a0a0a8;
+      --text-3: #65656d;
+      --border: rgba(255, 255, 255, 0.07);
+      --accent: #7c93ff;
+      --accent-hover: #93a6ff;
+      --accent-soft: rgba(124, 147, 255, 0.15);
+      --danger: #ff6b6b;
+      --danger-soft: rgba(255, 107, 107, 0.14);
+      --ok-fg: #6ee7a0;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.35), 0 12px 32px rgba(0, 0, 0, 0.4);
+      --toast-bg: #2c2c31;
+      --toast-fg: #f5f5f7;
+      --ph-a: #20222c; --ph-b: #26232a;
+      --shimmer: rgba(255, 255, 255, 0.06);
+    }
+
+    /* ---------- Base ---------- */
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-feature-settings: "cv11", "ss01";
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    button, input { font: inherit; color: inherit; }
+    svg.icon { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+    .page { max-width: 720px; margin: 0 auto; padding: 20px 16px 120px; }
+
+    /* ---------- Mockup banner (not part of the design) ---------- */
+    .mockup-bar {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      font-size: 12.5px; color: var(--text-2);
+      padding: 8px 12px; margin-bottom: 28px;
+      border: 1px dashed var(--border); border-radius: 12px;
+    }
+    .mockup-bar strong { color: var(--text); font-weight: 600; }
+    .mockup-bar .spacer { flex: 1; }
+    .mockup-bar button {
+      border: 1px solid var(--border); background: var(--surface); border-radius: 8px;
+      padding: 4px 10px; font-size: 12.5px; cursor: pointer;
+    }
+    .mockup-bar button.on { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+
+    /* ---------- Header ---------- */
+    .app-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
+    .app-header h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.025em; margin: 0; line-height: 1.1; }
+    .app-header .subtitle { margin: 6px 0 0; font-size: 14px; color: var(--text-2); font-weight: 500; }
+    .header-actions { display: flex; align-items: center; gap: 4px; }
+    .icon-btn {
+      display: inline-grid; place-items: center;
+      width: 36px; height: 36px; border-radius: 10px;
+      border: none; background: transparent; color: var(--text-2); cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+    }
+    .icon-btn:hover { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+    .icon-btn:active { transform: scale(0.94); }
+    .sync {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 30px; padding: 0 11px; margin-right: 4px; border-radius: 999px;
+      font-size: 12.5px; font-weight: 600; white-space: nowrap;
+      background: var(--surface); border: 1px solid var(--border); color: var(--text-2);
+    }
+    .sync svg.icon { width: 14px; height: 14px; stroke-width: 2.3; color: var(--ok-fg); }
+
+    /* ---------- Composer ---------- */
+    .composer {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface); border-radius: 18px; padding: 8px 8px 8px 16px;
+      box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .composer:focus-within { box-shadow: var(--shadow-md), 0 0 0 4px var(--accent-soft); border-color: transparent; }
+    .composer > svg.icon { color: var(--text-3); }
+    .composer input {
+      flex: 1; min-width: 0; height: 40px; border: none; outline: none; background: transparent;
+      font-size: 15.5px; color: var(--text);
+    }
+    .composer input::placeholder { color: var(--text-3); }
+    .hint { font-size: 12px; color: var(--text-3); white-space: nowrap; }
+    .hint kbd, .edit-hint kbd {
+      font: inherit; font-size: 11px; font-weight: 600; color: var(--text-2);
+      padding: 1px 5px; border-radius: 5px; background: var(--surface-2); border: 1px solid var(--border);
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      height: 40px; padding: 0 16px; border-radius: 12px; border: none;
+      font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap;
+      transition: background 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn.primary { background: var(--accent); color: #fff; }
+    .btn.primary:hover { background: var(--accent-hover); }
+    .btn.primary:disabled { opacity: 0.4; cursor: default; transform: none; }
+    .btn svg.icon { width: 16px; height: 16px; stroke-width: 2.4; }
+
+    .notice {
+      display: flex; align-items: center; gap: 8px;
+      margin: 10px 4px 0; font-size: 13.5px; font-weight: 500; color: var(--text-2);
+      min-height: 20px; opacity: 0; transition: opacity 0.2s ease;
+    }
+    .notice.show { opacity: 1; }
+    .notice svg.icon { width: 15px; height: 15px; }
+    .notice.error { color: var(--danger); }
+    .notice.info { color: var(--accent); }
+
+    /* ---------- The list: name on the left, screenshot on the right ---------- */
+    .list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+
+    .row {
+      position: relative; display: flex; align-items: center; gap: 18px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+      padding: 12px 12px 12px 20px; box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s ease, transform 0.2s ease, opacity 0.3s ease;
+    }
+    .row:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .row:has(.row-link:focus-visible) { box-shadow: var(--shadow-md), 0 0 0 3px var(--accent); }
+
+    /* The whole row is one big link. The small buttons sit above it so they stay clickable. */
+    .row-link { position: absolute; inset: 0; z-index: 1; border-radius: inherit; outline: none; }
+    .row.editing .row-link { display: none; }
+
+    /* Left column */
+    .row-text { flex: 1; min-width: 0; align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+    .title {
+      margin: 0; font-size: 16px; font-weight: 600; line-height: 1.4; letter-spacing: -0.01em; word-break: break-word;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .title.untitled { color: var(--text-3); font-weight: 500; font-style: italic; }
+    .meta { margin-top: 4px; font-size: 12.5px; color: var(--text-3); }
+
+    .actions {
+      position: relative; z-index: 2; display: flex; gap: 2px; margin: 6px 0 -6px -8px;
+      opacity: 0; transition: opacity 0.15s ease;
+    }
+    .row:hover .actions, .row:focus-within .actions { opacity: 1; }
+    @media (hover: none) { .actions { opacity: 0.75; } }
+    .actions .icon-btn { width: 32px; height: 32px; border-radius: 9px; }
+    .actions .icon-btn:hover { background: var(--surface-2); box-shadow: none; }
+    .actions .icon-btn.danger:hover { background: var(--danger-soft); color: var(--danger); }
+    .actions .icon-btn svg.icon { width: 16px; height: 16px; }
+    .row.editing .actions { display: none; }
+
+    .title-input {
+      position: relative; z-index: 2;
+      width: 100%; height: 38px; padding: 0 12px; border-radius: 10px;
+      border: 1px solid var(--accent); background: var(--surface-2); color: var(--text);
+      font-size: 15px; font-weight: 600; box-shadow: 0 0 0 4px var(--accent-soft);
+    }
+    .title-input:focus { outline: none; }
+    .title-input::placeholder { color: var(--text-3); font-weight: 500; }
+    .edit-hint { margin-top: 7px; font-size: 12px; color: var(--text-3); }
+    .row.editing { box-shadow: var(--shadow-md), 0 0 0 4px var(--accent-soft); transform: none; }
+
+    /* Right column: the screenshot */
+    .thumb {
+      position: relative; flex: 0 0 232px; aspect-ratio: 16 / 9;
+      border-radius: 10px; overflow: hidden; background: var(--surface-2);
+      border: 1px solid var(--border);
+    }
+    .thumb img {
+      display: block; width: 100%; height: 100%;
+      object-fit: cover; object-position: center bottom; /* trims claude.ai's grey top bar */
+      transition: transform 0.4s ease; animation: fade-in 0.4s ease;
+    }
+    .row:hover .thumb img, .row:hover .fake-slide { transform: scale(1.03); }
+
+    .placeholder, .loading {
+      position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px;
+      background: linear-gradient(135deg, var(--ph-a), var(--ph-b)); color: var(--text-2);
+      font-size: 12.5px; font-weight: 500; text-align: center; animation: fade-in 0.3s ease;
+    }
+    .placeholder > svg.icon { width: 22px; height: 22px; color: var(--text-3); }
+    .placeholder .retry {
+      position: relative; z-index: 2;
+      display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 11px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--surface); color: var(--text);
+      font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .placeholder .retry:hover { color: var(--accent); }
+    .placeholder .retry svg.icon { width: 13px; height: 13px; }
+    .loading { flex-direction: row; }
+    .loading::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(100deg, transparent 20%, var(--shimmer) 50%, transparent 80%);
+      transform: translateX(-100%); animation: shimmer 1.4s ease-in-out infinite;
+    }
+    .loading svg.icon { width: 16px; height: 16px; animation: spin 0.9s linear infinite; color: var(--accent); }
+
+    /* Duplicate highlight */
+    .row.highlight { animation: highlight 1.8s ease; }
+    @keyframes highlight {
+      0%, 100% { box-shadow: var(--shadow-sm); }
+      15%, 55% { box-shadow: var(--shadow-md), 0 0 0 4px var(--accent); transform: scale(1.012); }
+      35% { box-shadow: var(--shadow-md), 0 0 0 8px var(--accent-soft); transform: scale(1.012); }
+    }
+
+    /* ---------- Fake slides (mockup only — stand-ins for real screenshots) ---------- */
+    .fake-slide {
+      position: absolute; inset: 0; display: grid; place-items: center; padding: 9% 8%;
+      transition: transform 0.4s ease; animation: fade-in 0.4s ease;
+    }
+    .fake-slide .panel {
+      width: 100%; height: 100%; border-radius: 8px; background: #fff; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 2px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      color: #1f2a44; text-align: center; padding: 4px;
+    }
+    .fake-slide .emoji { font-size: 17px; letter-spacing: 4px; }
+    .fake-slide .big { font-size: 12.5px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+    .fake-slide .small { font-size: 9.5px; color: #66708a; }
+
+    /* ---------- Empty state ---------- */
+    .empty { text-align: center; padding: 48px 20px 20px; animation: fade-in 0.4s ease; }
+    .empty svg.art { width: 132px; height: 110px; margin-bottom: 14px; }
+    .empty h2 { margin: 0 0 6px; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+    .empty p { margin: 0 auto; max-width: 360px; font-size: 14.5px; color: var(--text-2); line-height: 1.5; }
+
+    /* ---------- Undo toast ---------- */
+    .toast {
+      position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); z-index: 10;
+      display: flex; align-items: center; gap: 14px;
+      background: var(--toast-bg); color: var(--toast-fg);
+      padding: 10px 10px 10px 16px; border-radius: 14px; font-size: 14px; font-weight: 500;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      opacity: 0; pointer-events: none; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+      max-width: calc(100% - 32px);
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+    .toast button { background: rgba(255, 255, 255, 0.12); border: none; color: #fff; font-weight: 600; font-size: 13px; padding: 6px 12px; border-radius: 9px; cursor: pointer; }
+    .toast button:hover { background: rgba(255, 255, 255, 0.2); }
+
+    /* ---------- Motion ---------- */
+    .enter { animation: enter 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.1); }
+    .leaving { opacity: 0; transform: scale(0.97); pointer-events: none; }
+    @keyframes enter { from { opacity: 0; transform: translateY(-8px) scale(0.98); } to { opacity: 1; transform: none; } }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes shimmer { to { transform: translateX(100%); } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    .hidden { display: none !important; }
+
+    /* ---------- Phones: same row, smaller screenshot ---------- */
+    @media (max-width: 560px) {
+      .row { gap: 12px; padding: 10px 10px 10px 14px; border-radius: 14px; }
+      .thumb { flex-basis: 42%; border-radius: 8px; }
+      .title { font-size: 15px; }
+      .meta { font-size: 12px; }
+      .placeholder > svg.icon, .placeholder .ph-text, .loading .ph-text { display: none; }
+      .placeholder .retry .ph-text { display: none; }
+      .placeholder .retry { padding: 0 9px; }
+      .fake-slide .emoji { font-size: 12px; letter-spacing: 2px; }
+      .fake-slide .big { font-size: 9.5px; }
+      .fake-slide .small { display: none; }
+    }
+    @media (max-width: 480px) {
+      .app-header h1 { font-size: 28px; }
+      .hint { display: none; }
+      .sync .label { display: none; }
+      .sync { padding: 0 8px; }
+      .composer .btn .label { display: none; }
+      .composer .btn { padding: 0 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="mockup-bar">
+      <strong>Mockup v4</strong> — preview only, nothing is saved.
+      <span class="spacer"></span>
+      <button id="mk-dup">Try a duplicate</button>
+      <button id="mk-new">Try a new link</button>
+      <button id="mk-fail">Screenshots: work</button>
+      <button id="mk-empty">Empty state</button>
+    </div>
+
+    <header class="app-header">
+      <div>
+        <h1>Artifacts</h1>
+        <p class="subtitle" id="count-label"></p>
+      </div>
+      <div class="header-actions">
+        <span class="sync" role="status"><span data-icon="cloudCheck"></span><span class="label">Synced</span></span>
+        <button class="icon-btn" id="theme-toggle" aria-label="Toggle dark mode"></button>
+        <button class="icon-btn" id="sign-out" aria-label="Sign out" title="Sign out"><span data-icon="logOut"></span></button>
+      </div>
+    </header>
+
+    <form class="composer" id="composer" novalidate>
+      <span data-icon="link"></span>
+      <input type="url" id="url-input" placeholder="Paste a Claude artifact link…" autocomplete="off" aria-label="Artifact link" />
+      <span class="hint"><kbd>Enter</kbd> to save</span>
+      <button type="submit" class="btn primary" id="add-btn" disabled><span data-icon="plus"></span><span class="label">Save</span></button>
+    </form>
+    <div class="notice" id="notice" role="status"></div>
+
+    <main id="list" class="list"></main>
+    <div class="empty hidden" id="empty">
+      <svg class="art" viewBox="0 0 132 110" aria-hidden="true">
+        <rect x="14" y="18" width="104" height="24" rx="7" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5"/>
+        <rect x="22" y="26" width="40" height="5" rx="2.5" fill="var(--accent)" opacity="0.8"/>
+        <rect x="84" y="22" width="30" height="16" rx="4" fill="var(--accent-soft)"/>
+        <rect x="14" y="48" width="104" height="24" rx="7" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5"/>
+        <rect x="22" y="56" width="48" height="5" rx="2.5" fill="var(--text-3)" opacity="0.5"/>
+        <rect x="84" y="52" width="30" height="16" rx="4" fill="var(--accent-soft)"/>
+        <circle cx="104" cy="88" r="15" fill="var(--accent)"/>
+        <path d="M104 81.5v13M97.5 88h13" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <h2>Your library is empty</h2>
+      <p>Paste a link to one of your shared Claude artifacts above. Its first slide becomes the picture, and you give it a name.</p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status">
+    <span>Link deleted</span>
+    <button id="undo">Undo</button>
+  </div>
+
+  <script>
+    // ---------- Icons ----------
+    const ICONS = {
+      pencil: '<path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
+      trash: '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+      refresh: '<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/>',
+      loader: '<path d="M21 12a9 9 0 1 1-6.2-8.56"/>',
+      sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+      moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+      plus: '<path d="M5 12h14M12 5v14"/>',
+      link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+      imageOff: '<path d="m2 2 20 20"/><path d="M10.41 10.41a2 2 0 1 1-2.83-2.83"/><path d="M13.5 13.5 6 21"/><path d="M18 12l3 3"/><path d="M3.59 3.59A2 2 0 0 0 3 5v14a2 2 0 0 0 2 2h14a2 2 0 0 0 1.41-.59"/><path d="M21 15V5a2 2 0 0 0-2-2H9"/>',
+      alert: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>',
+      sparkle: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6.3 6.3l2.1 2.1M15.6 15.6l2.1 2.1M6.3 17.7l2.1-2.1M15.6 8.4l2.1-2.1"/>',
+      cloudCheck: '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><path d="m9.5 14 2 2 3.5-3.5"/>',
+      logOut: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/>',
+    };
+    const icon = (name) => `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
+    document.querySelectorAll('[data-icon]').forEach((el) => { el.outerHTML = icon(el.dataset.icon); });
+
+    // ---------- Sample data ----------
+    const REAL_SHOT = 'https://upobdjogsnjarngfoqso.supabase.co/storage/v1/object/public/artifact-previews/471be868-9312-4102-8f6f-b092a8774f4d/RFzFo4BPRZcUkufBM8G49R-1790601939191.jpg';
+    const SAMPLE_URL = 'https://claude.ai/artifact/RFzFo4BPRZcUkufBM8G49R';
+    const FAKE_SLIDES = [
+      { bg: 'linear-gradient(160deg,#ffe7c7,#ffd1dc)', emoji: '🍜 🥟 🧋', big: 'Food & Drink', small: '食物和飲料' },
+      { bg: 'linear-gradient(160deg,#d6f5e3,#cfe3ff)', emoji: '🌧️ ☀️ ❄️', big: 'What’s the weather like?', small: '天氣怎麼樣？' },
+      { bg: 'linear-gradient(160deg,#e6dcff,#ffe0f0)', emoji: '✨ 📚 ✏️', big: 'Your new artifact', small: 'Slide 1' },
+      { bg: 'linear-gradient(160deg,#fff3b0,#ffd6a5)', emoji: '🏀 ⚽ 🏊', big: 'Sports & Hobbies', small: '運動和愛好' },
+      { bg: 'linear-gradient(160deg,#cdeffd,#d9d4ff)', emoji: '🚌 🚇 🚲', big: 'Getting Around', small: '交通工具' },
+      { bg: 'linear-gradient(160deg,#ffdede,#fff0c9)', emoji: '👨‍👩‍👧 🏠 🐶', big: 'My Family', small: '我的家人' },
+      { bg: 'linear-gradient(160deg,#dff7d8,#fdf6c9)', emoji: '🔢 ➕ 💰', big: 'Numbers 1–100', small: '數字' },
+    ];
+    const daysAgo = (n) => Date.now() - n * 86400000;
+
+    let links = [
+      { id: 'a1', url: SAMPLE_URL, title: 'How Was Your Holiday?', preview: { kind: 'real' }, saved: daysAgo(0) },
+      { id: 'a2', url: 'https://claude.ai/artifact/Fd8kQ2mZp0LxT4rVb7NcYe', title: 'Food & Drink vocabulary', preview: { kind: 'fake', i: 0 }, saved: daysAgo(2) },
+      { id: 'a3', url: 'https://claude.ai/artifact/Wx1Hn5sJq8UoP3aKd6GtLm', title: 'Weather small talk', preview: null, saved: daysAgo(4) },
+      { id: 'a4', url: 'https://claude.ai/artifact/Hb2Tq7cRk2VnM7yQw1EsHa', title: 'Sports & hobbies — speaking practice for Grade 5 with picture prompts', preview: { kind: 'fake', i: 3 }, saved: daysAgo(6) },
+      { id: 'a5', url: 'https://claude.ai/artifact/Zp4Tb9cRk2VnM7yQw1EsHa', title: '', preview: { kind: 'fake', i: 1 }, saved: daysAgo(9) },
+      { id: 'a6', url: 'https://claude.ai/artifact/Kt5Pb9cRk2VnM7yQw1EsHa', title: 'Getting around town', preview: { kind: 'fake', i: 4 }, saved: daysAgo(13) },
+      { id: 'a7', url: 'https://claude.ai/artifact/Mf6Tb9cRk2VnM7yQw1EsHa', title: 'My family', preview: { kind: 'fake', i: 5 }, saved: daysAgo(20) },
+      { id: 'a8', url: 'https://claude.ai/artifact/Qn7Tb9cRk2VnM7yQw1EsHa', title: 'Numbers 1–100 game', preview: { kind: 'fake', i: 6 }, saved: daysAgo(330) },
+    ];
+    let screenshotsWork = true;
+    let showEmpty = false;
+    let newCounter = 0;
+
+    // ---------- Helpers ----------
+    const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    // "Added 28 Sep" — the year is only shown for links added in an earlier year
+    const addedDate = (t) => {
+      const d = new Date(t);
+      const opts = { day: 'numeric', month: 'short' };
+      if (d.getFullYear() !== new Date().getFullYear()) opts.year = 'numeric';
+      return 'Added ' + d.toLocaleDateString('en-GB', opts);
+    };
+    // Accepts claude.ai/artifact/<id> links (with or without https://, ?query, #hash, trailing slash)
+    function artifactId(raw) {
+      let s = raw.trim();
+      if (!/^https?:\/\//i.test(s)) s = 'https://' + s;
+      try {
+        const u = new URL(s);
+        if (u.hostname !== 'claude.ai') return null;
+        const m = u.pathname.match(/^\/artifact\/([A-Za-z0-9_-]+)\/?$/);
+        return m ? m[1] : null;
+      } catch { return null; }
+    }
+    const idOfLink = (l) => l.url.split('/').pop();
+
+    // ---------- Rendering ----------
+    const list = document.getElementById('list');
+
+    function thumbHTML(l) {
+      if (l.loading) {
+        return `<div class="loading">${icon('loader')}<span class="ph-text">Taking a snapshot…</span></div>`;
+      }
+      if (!l.preview) {
+        return `<div class="placeholder">
+          ${icon('imageOff')}
+          <button type="button" class="retry" data-act="refresh" aria-label="Try the preview again">${icon('refresh')}<span class="ph-text">Try again</span></button>
+        </div>`;
+      }
+      if (l.preview.kind === 'real') {
+        return `<img src="${REAL_SHOT}" alt="" loading="lazy" />`;
+      }
+      const f = FAKE_SLIDES[l.preview.i];
+      return `<div class="fake-slide" style="background:${f.bg}"><div class="panel">
+        <div class="emoji">${f.emoji}</div><div class="big">${esc(f.big)}</div><div class="small">${esc(f.small)}</div>
+      </div></div>`;
+    }
+
+    function textHTML(l) {
+      if (l.editing) {
+        return `<input class="title-input" type="text" maxlength="120" value="${esc(l.title)}"
+                  placeholder="Give it a name…" aria-label="Artifact title" />
+                <div class="edit-hint"><kbd>Enter</kbd> to save · <kbd>Esc</kbd> to ${l.isNew ? 'skip' : 'cancel'}</div>`;
+      }
+      const t = l.title ? `<h3 class="title">${esc(l.title)}</h3>` : `<h3 class="title untitled">Untitled artifact</h3>`;
+      return `${t}
+        <div class="meta">${addedDate(l.saved)}</div>
+        <div class="actions">
+          <button class="icon-btn" type="button" data-act="edit" aria-label="Rename" title="Rename">${icon('pencil')}</button>
+          <button class="icon-btn" type="button" data-act="refresh" aria-label="Refresh preview" title="Refresh preview">${icon('refresh')}</button>
+          <button class="icon-btn danger" type="button" data-act="delete" aria-label="Delete" title="Delete">${icon('trash')}</button>
+        </div>`;
+    }
+
+    function rowHTML(l) {
+      const label = l.title || 'Untitled artifact';
+      return `
+        <a class="row-link" href="${esc(l.url)}" target="_blank" rel="noopener" aria-label="Open ${esc(label)} in a new tab"></a>
+        <div class="row-text">${textHTML(l)}</div>
+        <div class="thumb">${thumbHTML(l)}</div>`;
+    }
+
+    function renderRow(l) {
+      let el = list.querySelector(`[data-id="${l.id}"]`);
+      if (!el) {
+        el = document.createElement('article');
+        el.className = 'row';
+        el.dataset.id = l.id;
+      }
+      el.classList.toggle('editing', !!l.editing);
+      el.innerHTML = rowHTML(l);
+      if (l.editing) {
+        const input = el.querySelector('.title-input');
+        requestAnimationFrame(() => { input.focus(); input.select(); });
+      }
+      return el;
+    }
+
+    function render() {
+      const shown = showEmpty ? [] : links;
+      list.innerHTML = '';
+      shown.forEach((l) => list.appendChild(renderRow(l)));
+      document.getElementById('empty').classList.toggle('hidden', shown.length > 0);
+      updateCount();
+    }
+    function updateCount() {
+      const n = showEmpty ? 0 : links.length;
+      document.getElementById('count-label').textContent = n === 1 ? '1 saved' : `${n} saved`;
+    }
+
+    // ---------- Notice under the composer ----------
+    const notice = document.getElementById('notice');
+    let noticeTimer;
+    function say(kind, iconName, text) {
+      notice.className = `notice show ${kind}`;
+      notice.innerHTML = `${icon(iconName)}<span>${esc(text)}</span>`;
+      clearTimeout(noticeTimer);
+      noticeTimer = setTimeout(() => notice.classList.remove('show'), 3500);
+    }
+
+    // ---------- Saving a link ----------
+    const input = document.getElementById('url-input');
+    const addBtn = document.getElementById('add-btn');
+    const emptyBtn = document.getElementById('mk-empty');
+    input.addEventListener('input', () => { addBtn.disabled = !input.value.trim(); });
+
+    document.getElementById('composer').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const raw = input.value;
+      if (!raw.trim()) return;
+      const id = artifactId(raw);
+      if (!id) {
+        say('error', 'alert', 'That isn’t a Claude artifact link. It should look like claude.ai/artifact/…');
+        return;
+      }
+      if (showEmpty) { showEmpty = false; emptyBtn.classList.remove('on'); render(); }
+
+      const existing = links.find((l) => idOfLink(l) === id);
+      input.value = ''; addBtn.disabled = true;
+      if (existing) {
+        say('info', 'sparkle', 'Already in your library. Here it is.');
+        const el = list.querySelector(`[data-id="${existing.id}"]`);
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.remove('highlight'); void el.offsetWidth; el.classList.add('highlight');
+        return;
+      }
+
+      const l = {
+        id: 'n' + (++newCounter), url: `https://claude.ai/artifact/${id}`, title: '',
+        preview: null, loading: true, editing: true, isNew: true, saved: Date.now(),
+      };
+      links.unshift(l);
+      const el = renderRow(l);
+      el.classList.add('enter');
+      list.prepend(el);
+      document.getElementById('empty').classList.add('hidden');
+      updateCount();
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      takeScreenshot(l);
+    });
+
+    // Pretend to call the Edge Function (2.6 seconds here; the real one took about 8)
+    function takeScreenshot(l) {
+      if (l.preview) l.lastPreview = l.preview;
+      l.loading = true;
+      swapThumb(l);
+      setTimeout(() => {
+        l.loading = false;
+        l.preview = screenshotsWork ? (l.lastPreview || { kind: 'fake', i: 2 }) : null;
+        if (!screenshotsWork && !l.isNew) say('error', 'alert', 'Couldn’t get a preview right now. Try again later.');
+        swapThumb(l);
+      }, 2600);
+    }
+    // Only replace the picture, so a title being typed isn't disturbed
+    function swapThumb(l) {
+      const el = list.querySelector(`[data-id="${l.id}"]`);
+      if (el) el.querySelector('.thumb').innerHTML = thumbHTML(l);
+    }
+
+    // ---------- Row buttons ----------
+    list.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-act]');
+      if (!btn) return;
+      e.preventDefault();
+      const row = btn.closest('.row');
+      const l = links.find((x) => x.id === row.dataset.id);
+      const act = btn.dataset.act;
+      if (act === 'edit') { l.editing = true; l.isNew = false; renderRow(l); }
+      if (act === 'refresh') { if (!l.loading) takeScreenshot(l); }
+      if (act === 'delete') deleteLink(l, row);
+    });
+
+    list.addEventListener('keydown', (e) => {
+      if (!e.target.classList.contains('title-input')) return;
+      const l = links.find((x) => x.id === e.target.closest('.row').dataset.id);
+      if (e.key === 'Enter') { e.preventDefault(); finishEdit(l, e.target.value); }
+      if (e.key === 'Escape') { e.preventDefault(); finishEdit(l, l.title); }
+    });
+    list.addEventListener('focusout', (e) => {
+      if (!e.target.classList.contains('title-input')) return;
+      const row = e.target.closest('.row');
+      const l = row && links.find((x) => x.id === row.dataset.id);
+      if (l && l.editing) finishEdit(l, e.target.value);
+    });
+    function finishEdit(l, value) {
+      if (!l.editing) return;
+      l.editing = false; l.isNew = false;
+      l.title = value.trim();
+      renderRow(l);
+    }
+
+    // ---------- Delete with 5-second undo ----------
+    const toast = document.getElementById('toast');
+    let pending = null, toastTimer;
+    function deleteLink(l, row) {
+      if (pending) pending.commit();
+      const index = links.indexOf(l);
+      links.splice(index, 1);
+      row.classList.add('leaving');
+      setTimeout(() => { row.remove(); if (!links.length) render(); }, 250);
+      updateCount();
+      pending = {
+        undo() { links.splice(index, 0, l); render(); },
+        commit() { /* real app: set deleted = true */ },
+      };
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.classList.remove('show'); pending && pending.commit(); pending = null; }, 5000);
+    }
+    document.getElementById('undo').addEventListener('click', () => {
+      if (!pending) return;
+      clearTimeout(toastTimer);
+      pending.undo(); pending = null;
+      toast.classList.remove('show');
+    });
+
+    // ---------- Theme toggle ----------
+    const themeBtn = document.getElementById('theme-toggle');
+    const isDark = () => {
+      const t = document.documentElement.dataset.theme;
+      return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    };
+    const paintThemeBtn = () => { themeBtn.innerHTML = icon(isDark() ? 'sun' : 'moon'); };
+    try { const saved = localStorage.getItem('mockup-theme'); if (saved) document.documentElement.dataset.theme = saved; } catch (e) {}
+    themeBtn.addEventListener('click', () => {
+      const next = isDark() ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      try { localStorage.setItem('mockup-theme', next); } catch (e) {}
+      paintThemeBtn();
+    });
+    paintThemeBtn();
+
+    // ---------- Mockup-only controls ----------
+    document.getElementById('mk-dup').addEventListener('click', () => {
+      input.value = SAMPLE_URL; addBtn.disabled = false; input.focus();
+      say('info', 'sparkle', 'Mockup: the sample link is filled in. Press Enter.');
+    });
+    document.getElementById('mk-new').addEventListener('click', () => {
+      input.value = 'https://claude.ai/artifact/New' + Math.random().toString(36).slice(2, 10);
+      addBtn.disabled = false; input.focus();
+      say('info', 'sparkle', 'Mockup: a new link is filled in. Press Enter.');
+    });
+    const failBtn = document.getElementById('mk-fail');
+    failBtn.addEventListener('click', () => {
+      screenshotsWork = !screenshotsWork;
+      failBtn.textContent = screenshotsWork ? 'Screenshots: work' : 'Screenshots: fail';
+      failBtn.classList.toggle('on', !screenshotsWork);
+    });
+    emptyBtn.addEventListener('click', () => {
+      showEmpty = !showEmpty;
+      emptyBtn.classList.toggle('on', showEmpty);
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
