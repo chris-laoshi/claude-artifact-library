@@ -21,7 +21,9 @@ const undoButton = document.getElementById('undo');
 const themeButton = document.getElementById('theme-toggle');
 const signOutButton = document.getElementById('sign-out');
 const syncStatus = document.getElementById('sync-status');
+const tools = document.getElementById('tools'); // search bar + A–Z switch
 const searchBox = document.getElementById('search');
+const sortToggle = document.getElementById('sort-toggle');
 const searchInput = document.getElementById('search-input');
 const searchCount = document.getElementById('search-count');
 const noResults = document.getElementById('no-results');
@@ -251,7 +253,7 @@ document.addEventListener('keydown', (event) => {
   if (event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey) return;
   const target = event.target;
   if (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
-  if (appView.classList.contains('hidden') || searchBox.classList.contains('hidden')) return;
+  if (appView.classList.contains('hidden') || tools.classList.contains('hidden')) return;
   event.preventDefault();
   searchInput.focus();
   searchInput.select();
@@ -271,10 +273,51 @@ function say(kind, iconName, text) {
 
 // ---------- Rendering ----------
 
+// ---------- Sort: newest first (default) or A–Z by name ----------
+// Remembered on this device, like the light/dark choice.
+
+const SORT_KEY = 'artifacts-sort';
+let sortAZ = false;
+try { sortAZ = localStorage.getItem(SORT_KEY) === 'az'; } catch (err) {}
+
 const newestFirst = (a, b) => b.createdAt.localeCompare(a.createdAt);
+const byName = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+
+function compareLinks(a, b) {
+  // A card that's just been added stays on top while its name is typed.
+  const aNew = editingIsNew && a.id === editingId;
+  const bNew = editingIsNew && b.id === editingId;
+  if (aNew !== bNew) return aNew ? -1 : 1;
+  if (!sortAZ) return newestFirst(a, b);
+  if (!a.title !== !b.title) return a.title ? -1 : 1; // untitled ones go last
+  return byName.compare(a.title, b.title) || newestFirst(a, b);
+}
+
+function paintSortToggle() {
+  sortToggle.setAttribute('aria-checked', String(sortAZ));
+}
+
+sortToggle.addEventListener('click', async () => {
+  if (editingId) await finishEditing(true);
+  sortAZ = !sortAZ;
+  try { localStorage.setItem(SORT_KEY, sortAZ ? 'az' : 'newest'); } catch (err) {}
+  paintSortToggle();
+  render();
+});
+paintSortToggle();
+
+// Scrolls to a card and flashes it (used for duplicates and moved cards).
+function flashRow(row) {
+  row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  row.classList.remove('highlight');
+  void row.offsetWidth; // restart the animation
+  row.classList.add('highlight');
+}
+
+// ---------- Rendering ----------
 
 function render({ enterId = null } = {}) {
-  links.sort(newestFirst);
+  links.sort(compareLinks);
   if (!links.length && query) { query = ''; searchInput.value = ''; }
   const searching = !!query.trim();
   const shown = searching ? links.filter(matchesSearch) : links;
@@ -284,8 +327,8 @@ function render({ enterId = null } = {}) {
   emptyState.classList.toggle('hidden', links.length > 0);
   countLabel.textContent = links.length === 1 ? '1 saved' : `${links.length} saved`;
 
-  // The search bar only appears once there's something to search.
-  searchBox.classList.toggle('hidden', links.length === 0);
+  // The search bar and A–Z switch only appear once there's something to search.
+  tools.classList.toggle('hidden', links.length === 0);
   searchBox.classList.toggle('has-text', !!query);
   const none = searching && links.length > 0 && shown.length === 0;
   searchCount.textContent = !searching ? '' : shown.length === 1 ? '1 match' : `${shown.length} matches`;
@@ -488,21 +531,32 @@ async function finishEditing(save) {
   const row = rowOf(id);
   const input = row && row.querySelector('.title-input');
   const value = input ? input.value.trim() : '';
+  const wasNew = editingIsNew;
   editingId = null;
   editingIsNew = false;
 
   const link = findLink(id);
-  if (link && save && value !== link.title) {
+  const renamed = !!link && save && value !== link.title;
+  if (renamed) {
     link.title = value;
     await storage.saveLink(link);
   }
+
+  // In A–Z order a new or changed name can move the card, so re-sort and show where it went.
+  const moved = sortAZ && !!link && (renamed || wasNew);
 
   if (refreshPending) {
     refreshPending = false;
     links = await storage.getAllLinks();
     render();
+  } else if (moved) {
+    render();
   } else if (row && link) {
     fillRow(row, link);
+  }
+  if (moved) {
+    const movedRow = rowOf(id);
+    if (movedRow) flashRow(movedRow);
   }
 }
 

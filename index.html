@@ -51,12 +51,18 @@
       </form>
       <div class="notice" id="notice" role="status"></div>
 
-      <div class="search hidden" id="search">
-        <span data-icon="search"></span>
-        <input type="search" id="search-input" placeholder="Search by name…" autocomplete="off" enterkeyhint="search" aria-label="Search artifacts by name" />
-        <span class="count" id="search-count" aria-live="polite"></span>
-        <span class="hint"><kbd>/</kbd> to search</span>
-        <button type="button" class="icon-btn clear" id="search-clear" aria-label="Clear search" title="Clear search"><span data-icon="x"></span></button>
+      <div class="tools hidden" id="tools">
+        <div class="search" id="search">
+          <span data-icon="search"></span>
+          <input type="search" id="search-input" placeholder="Search by name…" autocomplete="off" enterkeyhint="search" aria-label="Search artifacts by name" />
+          <span class="count" id="search-count" aria-live="polite"></span>
+          <span class="hint"><kbd>/</kbd> to search</span>
+          <button type="button" class="icon-btn clear" id="search-clear" aria-label="Clear search" title="Clear search"><span data-icon="x"></span></button>
+        </div>
+        <button type="button" class="sort-toggle" id="sort-toggle" role="switch" aria-checked="false"
+                title="Sort by name, A to Z (off: newest first)">
+          <span class="sort-label">A–Z</span><span class="switch" aria-hidden="true"></span>
+        </button>
       </div>
 
       <main id="list" class="list"></main>

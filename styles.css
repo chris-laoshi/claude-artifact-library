@@ -22,6 +22,7 @@
   --ph-a: #eef1fd; --ph-b: #f6efe6;
   --shimmer: rgba(255, 255, 255, 0.6);
   --mark: #dce3ff;
+  --switch-off: #d4d4da;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -47,6 +48,7 @@
     --ph-a: #20222c; --ph-b: #26232a;
     --shimmer: rgba(255, 255, 255, 0.06);
     --mark: rgba(124, 147, 255, 0.34);
+    --switch-off: #46464d;
   }
 }
 :root[data-theme="dark"] {
@@ -72,6 +74,7 @@
   --ph-a: #20222c; --ph-b: #26232a;
   --shimmer: rgba(255, 255, 255, 0.06);
   --mark: rgba(124, 147, 255, 0.34);
+  --switch-off: #46464d;
 }
 
 /* ---------- Base ---------- */
@@ -182,6 +185,32 @@ svg.icon { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-w
 .search:not(.has-text) .clear, .search:not(.has-text) .count { display: none; }
 .search.has-text .hint { display: none; }
 @media (hover: none) { .search .hint { display: none; } } /* no "/" key on phones */
+
+/* Search bar and the A–Z switch share one row */
+.tools { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+.tools .search { flex: 1; min-width: 0; margin-top: 0; }
+.sort-toggle {
+  display: inline-flex; align-items: center; gap: 9px; flex-shrink: 0;
+  height: 42px; padding: 0 11px 0 13px; border-radius: 13px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  font-size: 13px; font-weight: 600; color: var(--text-2); cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+}
+.sort-toggle:hover { background: var(--surface); color: var(--text); }
+.sort-toggle:active { transform: scale(0.97); }
+.sort-toggle:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--accent-soft); border-color: var(--accent); }
+.sort-toggle[aria-checked="true"] { color: var(--text); }
+.switch {
+  position: relative; width: 32px; height: 19px; border-radius: 999px;
+  background: var(--switch-off); transition: background 0.2s ease;
+}
+.switch::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 15px; height: 15px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s cubic-bezier(0.3, 0.9, 0.4, 1.2);
+}
+.sort-toggle[aria-checked="true"] .switch { background: var(--accent); }
+.sort-toggle[aria-checked="true"] .switch::after { transform: translateX(13px); }
 
 mark {
   background: var(--mark); color: inherit; border-radius: 4px;
