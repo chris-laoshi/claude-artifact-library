@@ -330,6 +330,7 @@ function textHTML(link) {
     <div class="actions">
       <button class="icon-btn" type="button" data-act="edit" aria-label="Rename" title="Rename">${icon('pencil')}</button>
       <button class="icon-btn" type="button" data-act="refresh" aria-label="Refresh preview" title="Refresh preview"${busy}>${icon('refresh')}</button>
+      <button class="icon-btn" type="button" data-act="copy" aria-label="Copy link" title="Copy link">${icon('copy')}</button>
       <button class="icon-btn danger" type="button" data-act="delete" aria-label="Delete" title="Delete">${icon('trash')}</button>
     </div>`;
 }
@@ -458,6 +459,7 @@ list.addEventListener('click', (event) => {
   if (act === 'edit') startEditing(id);
   if (act === 'refresh' && !loadingIds.has(id)) loadPreview(id);
   if (act === 'delete') deleteWithUndo(id);
+  if (act === 'copy') copyLink(id, button);
 });
 
 list.addEventListener('keydown', (event) => {
@@ -502,6 +504,48 @@ async function finishEditing(save) {
   } else if (row && link) {
     fillRow(row, link);
   }
+}
+
+// ---------- Copy link ----------
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    // Older browsers: copy through a hidden text box instead.
+    const box = document.createElement('textarea');
+    box.value = text;
+    box.setAttribute('readonly', '');
+    box.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+    document.body.appendChild(box);
+    box.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch {}
+    box.remove();
+    return ok;
+  }
+}
+
+// Copies the artifact's link, then shows a green tick on the button for a moment.
+const copiedTimers = new WeakMap();
+async function copyLink(id, button) {
+  const link = findLink(id);
+  if (!link) return;
+  if (!(await copyText(link.url))) {
+    say('error', 'alert', 'Couldn’t copy the link. Open the artifact and copy it from the address bar.');
+    return;
+  }
+  say('info', 'check', 'Link copied');
+  button.classList.add('copied');
+  button.innerHTML = icon('check');
+  button.setAttribute('aria-label', 'Link copied');
+  clearTimeout(copiedTimers.get(button));
+  copiedTimers.set(button, setTimeout(() => {
+    button.classList.remove('copied');
+    button.innerHTML = icon('copy');
+    button.setAttribute('aria-label', 'Copy link');
+  }, 1600));
 }
 
 // ---------- Delete with 5-second undo ----------

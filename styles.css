@@ -229,6 +229,8 @@ mark {
 .actions .icon-btn { width: 32px; height: 32px; border-radius: 9px; }
 .actions .icon-btn:hover { background: var(--surface-2); box-shadow: none; }
 .actions .icon-btn.danger:hover { background: var(--danger-soft); color: var(--danger); }
+.actions .icon-btn.copied, .actions .icon-btn.copied:hover { color: var(--ok-fg); }
+.actions .icon-btn.copied svg.icon { animation: pop 0.3s ease; }
 .actions .icon-btn svg.icon { width: 16px; height: 16px; }
 .actions .icon-btn:disabled { opacity: 0.4; cursor: default; }
 .row.editing .actions { display: none; }
@@ -350,6 +352,7 @@ mark {
 @keyframes enter { from { opacity: 0; transform: translateY(-8px) scale(0.98); } to { opacity: 1; transform: none; } }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pop { 50% { transform: scale(1.25); } }
 @keyframes shimmer { to { transform: translateX(100%); } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
