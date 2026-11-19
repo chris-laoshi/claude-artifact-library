@@ -21,8 +21,14 @@ const undoButton = document.getElementById('undo');
 const themeButton = document.getElementById('theme-toggle');
 const signOutButton = document.getElementById('sign-out');
 const syncStatus = document.getElementById('sync-status');
+const searchBox = document.getElementById('search');
+const searchInput = document.getElementById('search-input');
+const searchCount = document.getElementById('search-count');
+const noResults = document.getElementById('no-results');
+const noResultsTitle = document.getElementById('no-results-title');
 
 let links = [];
+let query = '';             // what's typed in the search box
 let editingId = null;       // the link whose title box is open
 let editingIsNew = false;   // true right after adding (Esc then means "skip")
 let refreshPending = false; // links changed on another device while editing
@@ -59,6 +65,8 @@ function showLogin(message = '') {
   toast.classList.remove('show');
   editingId = null;
   links = [];
+  query = '';
+  searchInput.value = '';
   loginSubmit.disabled = false;
   loginSubmit.textContent = 'Sign in';
   loginPassword.value = '';
@@ -179,6 +187,76 @@ function cleanArtifactUrl(raw) {
   }
 }
 
+// ---------- Search (names only) ----------
+// Every word typed must appear somewhere in the name, in any order,
+// ignoring capitals. "food vocab" finds "Food & Drink vocabulary".
+
+const queryWords = () => query.toLowerCase().split(/\s+/).filter(Boolean);
+
+function matchesSearch(link) {
+  const title = link.title.toLowerCase();
+  return queryWords().every((word) => title.includes(word));
+}
+
+// The name, escaped, with each matching word wrapped in <mark>.
+function highlight(title) {
+  const words = queryWords();
+  const lower = title.toLowerCase();
+  // A few rare letters change length when lowercased; just skip highlighting then.
+  if (!words.length || lower.length !== title.length) return esc(title);
+  const marked = new Array(title.length).fill(false);
+  words.forEach((word) => {
+    for (let i = lower.indexOf(word); i !== -1; i = lower.indexOf(word, i + 1)) {
+      marked.fill(true, i, i + word.length);
+    }
+  });
+  let out = '';
+  let open = false;
+  for (let i = 0; i < title.length; i++) {
+    if (marked[i] !== open) { out += open ? '</mark>' : '<mark>'; open = marked[i]; }
+    out += esc(title[i]);
+  }
+  return open ? out + '</mark>' : out;
+}
+
+function setQuery(value) {
+  query = value;
+  searchInput.value = value;
+  render();
+}
+
+searchInput.addEventListener('input', () => setQuery(searchInput.value));
+
+searchInput.addEventListener('keydown', (event) => {
+  if (event.isComposing) return;
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    setQuery('');
+    searchInput.blur();
+  }
+  // Enter opens the artifact when exactly one matches.
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    const shown = list.querySelectorAll('.row-link');
+    if (query.trim() && shown.length === 1) shown[0].click();
+  }
+});
+
+for (const button of [document.getElementById('search-clear'), document.getElementById('no-results-clear')]) {
+  button.addEventListener('click', () => { setQuery(''); searchInput.focus(); });
+}
+
+// Press "/" anywhere (when not typing in a box) to jump to the search.
+document.addEventListener('keydown', (event) => {
+  if (event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey) return;
+  const target = event.target;
+  if (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
+  if (appView.classList.contains('hidden') || searchBox.classList.contains('hidden')) return;
+  event.preventDefault();
+  searchInput.focus();
+  searchInput.select();
+});
+
 const findLink = (id) => links.find((l) => l.id === id);
 const rowOf = (id) => list.querySelector(`.row[data-id="${CSS.escape(id)}"]`);
 
@@ -197,10 +275,23 @@ const newestFirst = (a, b) => b.createdAt.localeCompare(a.createdAt);
 
 function render({ enterId = null } = {}) {
   links.sort(newestFirst);
+  if (!links.length && query) { query = ''; searchInput.value = ''; }
+  const searching = !!query.trim();
+  const shown = searching ? links.filter(matchesSearch) : links;
+
   list.innerHTML = '';
-  links.forEach((link) => list.appendChild(renderRow(link, link.id === enterId)));
+  shown.forEach((link) => list.appendChild(renderRow(link, link.id === enterId)));
   emptyState.classList.toggle('hidden', links.length > 0);
   countLabel.textContent = links.length === 1 ? '1 saved' : `${links.length} saved`;
+
+  // The search bar only appears once there's something to search.
+  searchBox.classList.toggle('hidden', links.length === 0);
+  searchBox.classList.toggle('has-text', !!query);
+  const none = searching && links.length > 0 && shown.length === 0;
+  searchCount.textContent = !searching ? '' : shown.length === 1 ? '1 match' : `${shown.length} matches`;
+  searchCount.classList.toggle('none', none);
+  noResults.classList.toggle('hidden', !none);
+  if (none) noResultsTitle.textContent = `No matches for “${query.trim()}”`;
 }
 
 function renderRow(link, entering = false) {
@@ -231,7 +322,7 @@ function fillRow(row, link) {
 
 function textHTML(link) {
   const title = link.title
-    ? `<h3 class="title">${esc(link.title)}</h3>`
+    ? `<h3 class="title">${highlight(link.title)}</h3>`
     : `<h3 class="title untitled">Untitled artifact</h3>`;
   const busy = loadingIds.has(link.id) ? ' disabled' : '';
   return `${title}
@@ -289,6 +380,9 @@ composer.addEventListener('submit', async (event) => {
 
   urlInput.value = '';
   addButton.disabled = true;
+
+  // Clear any search so the new (or already-saved) card is in view.
+  if (query) setQuery('');
 
   // Already saved? Show that one instead of saving it twice.
   const existing = links.find((l) => cleanArtifactUrl(l.url) === url);

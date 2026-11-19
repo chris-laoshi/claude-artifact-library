@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artifacts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <section class="login hidden" id="login-view">
+      <form class="login-card" id="login-form" novalidate>
+        <div class="login-logo" id="login-logo"></div>
+        <h2>Welcome back</h2>
+        <p class="lede">Sign in to see your artifacts on every device.</p>
+        <div class="login-error" id="login-error" role="alert"></div>
+        <label class="field">
+          <span data-icon="mail"></span>
+          <input type="email" id="login-email" placeholder="Email" autocomplete="username" />
+        </label>
+        <label class="field">
+          <span data-icon="lock"></span>
+          <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" />
+        </label>
+        <button type="submit" class="btn primary" id="login-submit">Sign in</button>
+        <p class="fine" id="login-fine"></p>
+      </form>
+    </section>
+
+    <div class="hidden" id="app-view">
+      <header class="app-header">
+        <div>
+          <h1>Artifacts</h1>
+          <p class="subtitle" id="count-label"></p>
+        </div>
+        <div class="header-actions">
+          <span class="sync synced" id="sync-status" role="status"></span>
+          <button class="icon-btn" id="theme-toggle" aria-label="Toggle dark mode"></button>
+          <button class="icon-btn" id="sign-out" aria-label="Sign out"></button>
+        </div>
+      </header>
+
+      <form class="composer" id="composer" novalidate>
+        <span data-icon="link"></span>
+        <input type="url" id="url-input" placeholder="Paste a Claude artifact link…" autocomplete="off" aria-label="Artifact link" />
+        <span class="hint"><kbd>Enter</kbd> to save</span>
+        <button type="submit" class="btn primary" id="add-btn" disabled><span data-icon="plus"></span><span class="label">Save</span></button>
+      </form>
+      <div class="notice" id="notice" role="status"></div>
+
+      <main id="list" class="list"></main>
+      <div class="empty hidden" id="empty">
+        <svg class="art" viewBox="0 0 132 110" aria-hidden="true">
+          <rect x="14" y="18" width="104" height="24" rx="7" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5"/>
+          <rect x="22" y="26" width="40" height="5" rx="2.5" fill="var(--accent)" opacity="0.8"/>
+          <rect x="84" y="22" width="30" height="16" rx="4" fill="var(--accent-soft)"/>
+          <rect x="14" y="48" width="104" height="24" rx="7" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5"/>
+          <rect x="22" y="56" width="48" height="5" rx="2.5" fill="var(--text-3)" opacity="0.5"/>
+          <rect x="84" y="52" width="30" height="16" rx="4" fill="var(--accent-soft)"/>
+          <circle cx="104" cy="88" r="15" fill="var(--accent)"/>
+          <path d="M104 81.5v13M97.5 88h13" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <h2>Your library is empty</h2>
+        <p>Paste a link to one of your shared Claude artifacts above. Its first slide becomes the picture, and you give it a name.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status">
+    <span>Link deleted</span>
+    <button id="undo">Undo</button>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -51,7 +51,21 @@
       </form>
       <div class="notice" id="notice" role="status"></div>
 
+      <div class="search hidden" id="search">
+        <span data-icon="search"></span>
+        <input type="search" id="search-input" placeholder="Search by name…" autocomplete="off" enterkeyhint="search" aria-label="Search artifacts by name" />
+        <span class="count" id="search-count" aria-live="polite"></span>
+        <span class="hint"><kbd>/</kbd> to search</span>
+        <button type="button" class="icon-btn clear" id="search-clear" aria-label="Clear search" title="Clear search"><span data-icon="x"></span></button>
+      </div>
+
       <main id="list" class="list"></main>
+      <div class="no-results hidden" id="no-results">
+        <span data-icon="search"></span>
+        <h2 id="no-results-title">No matches</h2>
+        <p>Try a different word, or check the spelling.</p>
+        <button type="button" class="btn" id="no-results-clear">Clear search</button>
+      </div>
       <div class="empty hidden" id="empty">
         <svg class="art" viewBox="0 0 132 110" aria-hidden="true">
           <rect x="14" y="18" width="104" height="24" rx="7" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5"/>
